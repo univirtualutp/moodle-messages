@@ -4,36 +4,50 @@ Features
 
 Send emails to one, multiple, or all course participants.
 Excludes users with role ID 9.
-Uses TinyMCE for rich text editing.
-Supports file attachments via PHPMailer.
+Uses TinyMCE for rich text editing (loaded locally).
+Supports file attachments via PHPMailer (max 5 MB per file).
 Bilingual support (Spanish and English).
-Captures course ID automatically from URL parameter.
+Captures course ID and user ID automatically from URL parameters.
+Compatible with PostgreSQL database.
 Secure and suitable for public GitHub repository.
 
 Installation
 
-Clone the repository:git clone https://github.com/yourusername/moodle-messages.git
+Clone the repository to /data/htdocs/moodle-messages:git clone https://github.com/yourusername/moodle-messages.git /data/htdocs/moodle-messages
 
 
 Install PHPMailer:composer require phpmailer/phpmailer
 
-Or download it and place it in lib/PHPMailer/.
+Or download it from https://github.com/PHPMailer/PHPMailer and place it in lib/PHPMailer/.
+Install TinyMCE:
+Download TinyMCE from https://www.tiny.cloud/download/.
+Extract the ZIP and copy the tinymce folder to lib/tinymce/ in the project.
+
+
 Create config/config.php based on the example below:<?php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'moodle_user');
+define('DB_HOST', 'your_host');
+define('DB_PORT', '5432');
+define('DB_USER', 'your_user');
 define('DB_PASS', 'your_password');
-define('DB_NAME', 'moodle_db');
+define('DB_NAME', 'your_database');
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_USER', 'your_email@gmail.com');
 define('SMTP_PASS', 'your_app_password');
 define('SMTP_PORT', 587);
 define('FROM_EMAIL', 'your_email@gmail.com');
-define('FROM_NAME', 'Moodle Messages');
 define('MOODLE_PREFIX', 'mdl_');
+?>
 
 
-Configure your web server to point to the moodle-messages directory.
-In Moodle, add an HTML block with a link like:<a href="https://yourdomain.com/moodle-messages/index.php?courseid=123">Send Messages to Course</a>
+Configure PHP settings in php.ini:
+Set upload_max_filesize = 5M
+Set post_max_size = 20M (to allow multiple attachments)
+Ensure the pdo_pgsql extension is enabled.
+Restart your web server after making changes.
+
+
+Configure your web server to point to /data/htdocs/moodle-messages, accessible as https://aulavirtual.utp.edu.co/moodle-messages/.
+In Moodle (located at /data/htdocs/campusunivirtual/moodle), add an HTML block with a link like:<a href="https://aulavirtual.utp.edu.co/moodle-messages/index.php?courseid=<?php echo $COURSE->id; ?>&userid=<?php echo $USER->id; ?>">Send Messages to Course</a>
 
 
 
@@ -42,7 +56,7 @@ Usage
 Access the form via the link in the Moodle course.
 Select recipients (individual users or all participants).
 Enter subject and message using TinyMCE.
-Attach files if needed.
+Attach files (up to 5 MB each).
 Send the email.
 
 License

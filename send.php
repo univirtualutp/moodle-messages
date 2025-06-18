@@ -1,10 +1,9 @@
 <?php
 require_once 'config/config.php';
-require_once 'lib/PHPMailer/src/PHPMailer.php';
-require_once 'lib/PHPMailer/src/SMTP.php';
-require_once 'lib/PHPMailer/src/Exception.php';
+require_once 'vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 // Cargar idioma
@@ -30,7 +29,7 @@ if (!$courseid || !$userid || empty($recipients) || !$subject || !$message || !$
 
 // Conexión a la base de datos
 try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+    $pdo = new PDO("pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     $error = $translations['error'] . ': ' . $e->getMessage();
@@ -116,3 +115,4 @@ try {
     $error = $translations['error'] . ': ' . $mail->ErrorInfo;
     header("Location: index.php?courseid=$courseid&userid=$userid&lang=$lang&error=" . urlencode($error));
 }
+?>

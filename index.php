@@ -23,7 +23,7 @@ if (!$userid) {
 
 // Conexión a la base de datos
 try {
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+    $pdo = new PDO("pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     $error = $translations['error'] . ': ' . $e->getMessage();
@@ -66,7 +66,8 @@ if (empty($users)) {
     exit;
 }
 
-// URL de regreso a Moodle (ajustar según tu instalación)
-$moodle_url = "https://yourmoodle.com/course/view.php?id=$courseid";
+// URL de regreso a Moodle
+$moodle_url = "https://aulaunivirtual.utp.edu.co/course/view.php?id=$courseid";
 
 include 'templates/form.php';
+?>
